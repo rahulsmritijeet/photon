@@ -1,10 +1,15 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { HiArrowsPointingIn } from 'react-icons/hi2';
 
-export default function FullscreenView({ color, onExit }) {
+export default function FullscreenView({ color, brightness, onExit }) {
   const [showUI, setShowUI] = useState(false);
   const timerRef = useRef(null);
   const lastTap = useRef(0);
+
+  const factor = (brightness || 100) / 100;
+  const adjR = Math.round(color.r * factor);
+  const adjG = Math.round(color.g * factor);
+  const adjB = Math.round(color.b * factor);
 
   const hideUI = useCallback(() => {
     setShowUI(false);
@@ -35,7 +40,8 @@ export default function FullscreenView({ color, onExit }) {
     const el = document.documentElement;
     if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
     return () => {
-      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      if (document.fullscreenElement)
+        document.exitFullscreen().catch(() => {});
     };
   }, []);
 
@@ -46,35 +52,62 @@ export default function FullscreenView({ color, onExit }) {
         position: 'fixed',
         inset: 0,
         zIndex: 9999,
-        background: `rgb(${color.r},${color.g},${color.b})`,
+        background: `rgb(${adjR},${adjG},${adjB})`,
         transition: 'background 0.3s ease',
         cursor: 'pointer',
         display: 'flex',
-        alignItems: 'flex-end',
-        justifyContent: 'center',
-        paddingBottom: 50
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        paddingBottom: 50,
       }}
     >
-      <div style={{
-        position: 'absolute',
-        top: 20,
-        left: 20,
-        fontSize: 13,
-        fontWeight: 600,
-        color: 'rgba(255,255,255,0.7)',
-        background: 'rgba(0,0,0,0.25)',
-        backdropFilter: 'blur(8px)',
-        padding: '6px 12px',
-        borderRadius: 8,
-        opacity: showUI ? 1 : 0,
-        transition: 'opacity 0.3s',
-        pointerEvents: 'none'
-      }}>
-        {color.name}
+      {/* Color info */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 20,
+          left: 20,
+          opacity: showUI ? 1 : 0,
+          transition: 'opacity 0.3s',
+          pointerEvents: 'none',
+        }}
+      >
+        <div
+          style={{
+            fontSize: 15,
+            fontWeight: 700,
+            color: 'rgba(255,255,255,0.8)',
+            background: 'rgba(0,0,0,0.25)',
+            backdropFilter: 'blur(8px)',
+            padding: '8px 14px',
+            borderRadius: 10,
+            marginBottom: 6,
+          }}
+        >
+          {color.name}
+        </div>
+        <div
+          style={{
+            fontSize: 12,
+            fontWeight: 600,
+            color: 'rgba(255,255,255,0.6)',
+            background: 'rgba(0,0,0,0.2)',
+            backdropFilter: 'blur(8px)',
+            padding: '5px 12px',
+            borderRadius: 8,
+          }}
+        >
+          {adjR}, {adjG}, {adjB} · {brightness}%
+        </div>
       </div>
 
+      {/* Exit button */}
       <button
-        onClick={(e) => { e.stopPropagation(); onExit(); }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onExit();
+        }}
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -91,7 +124,7 @@ export default function FullscreenView({ color, onExit }) {
           opacity: showUI ? 1 : 0,
           transition: 'opacity 0.3s',
           pointerEvents: showUI ? 'all' : 'none',
-          fontFamily: 'var(--font)'
+          fontFamily: 'var(--font)',
         }}
       >
         <HiArrowsPointingIn size={18} />

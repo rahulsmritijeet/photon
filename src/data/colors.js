@@ -63,6 +63,22 @@ export const cinematicPresets = [
       { name: 'Silver', r: 180, g: 180, b: 190 },
     ],
   },
+  {
+    name: 'Teal & Orange',
+    colors: [
+      { name: 'Cinema Teal', r: 0, g: 180, b: 180 },
+      { name: 'Film Orange', r: 230, g: 130, b: 50 },
+      { name: 'Deep Teal', r: 0, g: 120, b: 130 },
+    ],
+  },
+  {
+    name: 'Pastel Dream',
+    colors: [
+      { name: 'Blush', r: 255, g: 200, b: 200 },
+      { name: 'Lavender', r: 210, g: 200, b: 255 },
+      { name: 'Mint', r: 180, g: 255, b: 220 },
+    ],
+  },
 ];
 
 export const basicColors = [
@@ -85,27 +101,57 @@ export const basicColors = [
 ];
 
 export const ctPresets = [
+  { name: 'Deep Candle', k: 1500 },
   { name: 'Candle', k: 1800 },
+  { name: 'Sodium Lamp', k: 2200 },
   { name: 'Tungsten', k: 2700 },
   { name: 'Halogen', k: 3200 },
   { name: 'Fluorescent', k: 4000 },
+  { name: 'Horizon', k: 5000 },
   { name: 'Daylight', k: 5600 },
+  { name: 'Flash', k: 6000 },
   { name: 'Overcast', k: 6500 },
   { name: 'Shade', k: 7500 },
   { name: 'Blue Sky', k: 10000 },
   { name: 'Clear Sky', k: 12000 },
+  { name: 'Arctic Blue', k: 15000 },
+  { name: 'Deep Blue', k: 20000 },
+  { name: 'Ice Teal', k: 25000 },
+  { name: 'Teal Sky', k: 30000 },
+  { name: 'Deep Teal', k: 40000 },
 ];
 
 export function kelvinToRGB(k) {
+  if (k > 12000) {
+    const t = Math.min((k - 12000) / 28000, 1);
+    return {
+      r: Math.round(155 - t * 100),
+      g: Math.round(200 + t * 35),
+      b: Math.round(255 - t * 30),
+    };
+  }
+
   const temp = k / 100;
   let r, g, b;
 
   if (temp <= 66) {
     r = 255;
-    g = temp <= 0 ? 0 : Math.min(255, Math.max(0, 99.4708025861 * Math.log(temp) - 161.1195681661));
+    g =
+      temp <= 0
+        ? 0
+        : Math.min(
+            255,
+            Math.max(0, 99.4708025861 * Math.log(temp) - 161.1195681661)
+          );
   } else {
-    r = Math.min(255, Math.max(0, 329.698727446 * Math.pow(temp - 60, -0.1332047592)));
-    g = Math.min(255, Math.max(0, 288.1221695283 * Math.pow(temp - 60, -0.0755148492)));
+    r = Math.min(
+      255,
+      Math.max(0, 329.698727446 * Math.pow(temp - 60, -0.1332047592))
+    );
+    g = Math.min(
+      255,
+      Math.max(0, 288.1221695283 * Math.pow(temp - 60, -0.0755148492))
+    );
   }
 
   if (temp >= 66) {
@@ -113,7 +159,10 @@ export function kelvinToRGB(k) {
   } else if (temp <= 19) {
     b = 0;
   } else {
-    b = Math.min(255, Math.max(0, 138.5177312231 * Math.log(temp - 10) - 305.0447927307));
+    b = Math.min(
+      255,
+      Math.max(0, 138.5177312231 * Math.log(temp - 10) - 305.0447927307)
+    );
   }
 
   return { r: Math.round(r), g: Math.round(g), b: Math.round(b) };

@@ -13,8 +13,14 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState({ show: false, message: '' });
-  const [currentColor, setCurrentColor] = useState({ r: 255, g: 255, b: 255, name: 'White' });
+  const [currentColor, setCurrentColor] = useState({
+    r: 255,
+    g: 255,
+    b: 255,
+    name: 'White',
+  });
   const [currentCT, setCurrentCT] = useState(5600);
+  const [brightness, setBrightness] = useState(100);
   const [mode, setMode] = useState('rgb');
 
   useEffect(() => {
@@ -30,43 +36,71 @@ export default function App() {
     setTimeout(() => setToast({ show: false, message: '' }), 2500);
   };
 
+  const getAdjustedColor = () => {
+    const factor = brightness / 100;
+    return {
+      r: Math.round(currentColor.r * factor),
+      g: Math.round(currentColor.g * factor),
+      b: Math.round(currentColor.b * factor),
+      name: currentColor.name,
+    };
+  };
+
   if (loading) {
     return (
-      <div style={{
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: '#050505',
-        gap: 16
-      }}>
-        <div style={{
-          fontSize: 42,
-          fontWeight: 800,
-          letterSpacing: -2,
-          background: 'linear-gradient(135deg, #fff 0%, #555 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent'
-        }}>Photon</div>
-        <div style={{
-          width: 24, height: 24,
-          border: '2px solid #222',
-          borderTopColor: '#fff',
-          borderRadius: '50%',
-          animation: 'spin 0.7s linear infinite'
-        }} />
+      <div
+        style={{
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#050505',
+          gap: 16,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 42,
+            fontWeight: 800,
+            letterSpacing: -2,
+            background: 'linear-gradient(135deg, #fff 0%, #555 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
+          Photon
+        </div>
+        <div
+          style={{
+            width: 24,
+            height: 24,
+            border: '2px solid #222',
+            borderTopColor: '#fff',
+            borderRadius: '50%',
+            animation: 'spin 0.7s linear infinite',
+          }}
+        />
       </div>
     );
   }
 
   return (
-    <AppContext.Provider value={{
-      user, showToast,
-      currentColor, setCurrentColor,
-      currentCT, setCurrentCT,
-      mode, setMode
-    }}>
+    <AppContext.Provider
+      value={{
+        user,
+        showToast,
+        currentColor,
+        setCurrentColor,
+        currentCT,
+        setCurrentCT,
+        brightness,
+        setBrightness,
+        getAdjustedColor,
+        mode,
+        setMode,
+      }}
+    >
       {user ? <MainApp /> : <AuthScreen />}
       <Toast show={toast.show} message={toast.message} />
     </AppContext.Provider>
