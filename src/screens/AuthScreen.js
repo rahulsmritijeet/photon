@@ -10,11 +10,7 @@ import {
   doc,
   getDoc,
   setDoc,
-  serverTimestamp,
-  collection,
-  getDocs,
-  query,
-  where
+  serverTimestamp
 } from '../firebase';
 import { deleteUser } from 'firebase/auth';
 import { HiEye, HiEyeSlash, HiExclamationCircle } from 'react-icons/hi2';
